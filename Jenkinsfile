@@ -5,7 +5,8 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/iamdeepaktiwari08/jenkins-sonarqube-cicd.git'
+                git branch: 'main',
+                    url: 'https://github.com/iamdeepaktiwari08/jenkins-sonarqube-cicd.git'
             }
         }
 
@@ -15,8 +16,8 @@ pipeline {
                     sh """
                     sonar-scanner \
                     -Dsonar.projectKey=jenkins-sonarqube-cicd \
-                    -Dsonar.projectName=jenkins-sonarqube-cicd \
-                    -Dsonar.sources=.
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://3.80.65.95:9000
                     """
                 }
             }
