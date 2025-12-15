@@ -1,4 +1,4 @@
-def insecure_login():
-    password = "admin123"  # hardcoded password
-    while True:
-        pass
+def secure_login(password):
+    if not password:
+        raise ValueError("Password required")
+    return True
