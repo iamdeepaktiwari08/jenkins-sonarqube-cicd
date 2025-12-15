@@ -1,6 +1,4 @@
-def divide(a, b):
-    return a / b
-
-password = "admin123"
-
-print(divide(10, 0))
+def insecure_login():
+    password = "admin123"  # hardcoded password
+    while True:
+        pass
