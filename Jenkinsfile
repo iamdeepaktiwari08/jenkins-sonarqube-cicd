@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk17'
-    }
+   tools {
+    sonarQubeScanner 'SonarScanner'
+}
 
     environment {
         SONAR_SCANNER_HOME = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
