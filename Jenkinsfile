@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        sonarQubeScanner 'SonarScanner'
-    }
-
     stages {
 
         stage('Checkout Code') {
@@ -17,18 +13,18 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                      sonar-scanner \
-                      -Dsonar.projectKey=jenkins-sonarqube-cicd \
-                      -Dsonar.sources=.
-                    '''
+                    sh """
+                        ${tool 'SonarScanner'}/bin/sonar-scanner \
+                        -Dsonar.projectKey=jenkins-sonarqube-cicd \
+                        -Dsonar.sources=.
+                    """
                 }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
+                timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
