@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SCANNER_HOME = tool 'SonarScanner'
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -13,11 +17,11 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                      sonar-scanner \
-                      -Dsonar.projectKey=jenkins-sonarqube-cicd \
-                      -Dsonar.sources=.
-                    '''
+                    sh """
+                        ${SCANNER_HOME}/bin/sonar-scanner \
+                        -Dsonar.projectKey=jenkins-sonarqube-cicd \
+                        -Dsonar.sources=.
+                    """
                 }
             }
         }
