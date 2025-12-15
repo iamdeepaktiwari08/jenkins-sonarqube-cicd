@@ -1,213 +1,69 @@
 🙏 Hanuman Kripa ❤️
 
-This project demonstrates a complete CI/CD pipeline using Jenkins and SonarQube, triggered automatically via GitHub Webhook. The pipeline performs static code analysis and enforces Quality Gates to fail or pass builds based on code quality.
+# Jenkins – SonarQube CI/CD Pipeline
 
-⸻
-
-📌 Project Overview
-	•	GitHub → Jenkins (Webhook trigger)
-	•	Jenkins → SonarQube (Code Analysis)
-	•	SonarQube → Jenkins (Quality Gate via Webhook)
-
-Whenever code is pushed to the main branch:
-	1.	GitHub triggers Jenkins automatically
-	2.	Jenkins pulls the code
-	3.	SonarQube analyzes the code
-	4.	Jenkins waits for Quality Gate result
-	5.	Build FAILS or PASSES based on rules
-
-⸻
-
-🧱 Tech Stack
-	•	Jenkins
-	•	SonarQube (Community Edition)
-	•	GitHub Webhooks
-	•	Python (Sample code)
-	•	Docker (for SonarQube setup)
-
-⸻
-
-📂 Repository Structure
-
-├── app/
-│   └── main.py
-├── Jenkinsfile
-├── docker-compose.yml
-├── sonar-project.properties
-├── README.md
-└── screenshots/
-
-⸻
-
+This project demonstrates an **end-to-end CI/CD pipeline** using **GitHub, Jenkins, SonarQube, and AWS EC2**.  
+Every code push automatically triggers Jenkins, runs SonarQube analysis, and enforces **Quality Gates**.
 
 ---
 
-## 🔄 CI/CD Workflow
-
-1. Developer pushes code to GitHub
-2. GitHub Webhook triggers Jenkins
-3. Jenkins pulls latest code
-4. SonarQube performs code analysis
-5. Quality Gate decision:
-   - ❌ FAIL → Pipeline stops
-   - ✅ PASS → Pipeline succeeds
+## 🛠️ Tools Used
+- **GitHub** – Source code management
+- **Jenkins** – CI/CD pipeline automation
+- **SonarQube** – Code quality & security analysis
+- **AWS EC2** – Hosting Jenkins & SonarQube
+- **Python** – Sample application code
 
 ---
 
-## ❌ Phase 1: Quality Gate Failure (Expected)
-
-Initially, insecure code was added to demonstrate **SonarQube failure handling**.
-
-### Jenkins Pipeline Failure
-![Phase 1 Jenkins Failure](screenshots/phase1-error.png)
-
-### SonarQube Quality Gate Failed
-![SonarQube Failed](screenshots/sonar-1.png)
+## 🔁 CI/CD Flow
+1. Developer pushes code to GitHub  
+2. GitHub webhook triggers Jenkins pipeline  
+3. Jenkins runs SonarQube analysis  
+4. Quality Gate decides **FAIL / PASS**  
+5. Pipeline stops or continues based on Quality Gate
 
 ---
 
-## ✅ Phase 2: Code Fixed & Quality Gate Passed
+## ❌ Phase 1: Quality Gate Failure
 
-Code issues were fixed and pushed again.
+When insecure / bad-quality code was pushed, SonarQube failed the Quality Gate and Jenkins aborted the pipeline.
 
-### Jenkins Pipeline Success
-![Phase 2 Jenkins Success](screenshots/phase2-success.png)
+### Jenkins Pipeline – Failed
+![Jenkins Failed](screenshots/phase1-error.png)
 
-### SonarQube Quality Gate Passed
-![SonarQube Passed](screenshots/sonar-2.png)
+### SonarQube – Failed Quality Gate
+![SonarQube Failed](screenshots/Sonar-1.png)
+
+---
+
+## ✅ Phase 2: Quality Gate Passed
+
+After fixing the code issues, the pipeline was triggered again and passed successfully.
+
+### Jenkins Pipeline – Success
+![Jenkins Success](screenshots/phase2-success.png)
+
+### SonarQube – Passed Quality Gate
+![SonarQube Passed](screenshots/sonar2.png)
 
 ---
 
 ## ☁️ Infrastructure (AWS EC2)
 
-Jenkins and SonarQube are hosted on an AWS EC2 instance.
+Jenkins and SonarQube are running on an AWS EC2 instance.
 
-![EC2 Server](screenshots/ec2-server.png)
+![AWS EC2](screenshots/Ec2-Server.png)
 
 ---
 
-## 🧪 Sample Secure Code (Python)
+## 🎯 Key Highlights
+- GitHub webhook based pipeline triggering
+- SonarQube Quality Gate enforcement
+- Jenkins pipeline automatically fails on bad code
+- Real-world DevOps workflow on AWS
 
-```python
-def secure_login(password):
-    if not password:
-        raise ValueError("Password required")
-    return True
-🧪 Sample Code Used
+---
 
-❌ Insecure Code (Fails Quality Gate)
-
-def insecure_login():
-    password = "admin123"  # hardcoded password
-    while True:
-        pass
-
-Issues detected:
-	•	Hardcoded password
-	•	Infinite loop
-	•	Security hotspot
-
-⸻
-
-✅ Secure Code (Passes Quality Gate)
-
-def secure_login(password):
-    if not password:
-        raise ValueError("Password required")
-    return True
-
-
-⸻
-
-⚙️ Jenkinsfile (Pipeline)
-
-pipeline {
-    agent any
-
-    tools {
-        sonarQubeScanner 'SonarScanner'
-    }
-
-    stages {
-        stage('Checkout Code') {
-            steps {
-                git 'https://github.com/iamdeepaktiwari08/jenkins-sonarqube-cicd.git'
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner'
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-    }
-}
-
-
-⸻
-
-🔗 Webhook Configuration
-
-GitHub → Jenkins
-
-Payload URL
-
-http://<JENKINS-IP>:8080/github-webhook/
-
-	•	Content type: application/json
-	•	Event: Push
-
-⸻
-
-SonarQube → Jenkins (Quality Gate)
-
-Webhook URL
-
-http://<JENKINS-IP>:8080/sonarqube-webhook/
-
-Used to notify Jenkins when analysis is complete.
-
-⸻
-
-📊 Quality Gate Rules Used
-	•	Coverage < 80% → FAIL
-	•	Bugs > 0 → FAIL
-	•	Vulnerabilities > 0 → FAIL
-	•	Security Hotspots Reviewed < 100% → FAIL
-
-⸻
-
-✅ Final Result
-	•	❌ Insecure code → Pipeline FAILED
-	•	✅ Secure code → Pipeline PASSED
-	•	🚀 Webhook successfully triggers Jenkins automatically
-
-⸻
-
-🎯 What You Learn From This Project
-	•	End-to-end CI/CD pipeline
-	•	Jenkins + SonarQube integration
-	•	Quality Gates in real-time
-	•	GitHub Webhook automation
-	•	DevSecOps fundamentals
-
-⸻
-
-👨‍💻 Author
-
-Deepak Tiwari
-Cloud & DevOps Engineer (Fresher)
-
-⸻
-
-⭐ If you like this project, give it a star on GitHub!
+## 📌 Conclusion
+This project demonstrates how **code quality is enforced automatically** in a CI/CD pipeline using Jenkins and SonarQube before code moves forward in the delivery process.
