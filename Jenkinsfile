@@ -1,12 +1,8 @@
 pipeline {
     agent any
 
-   tools {
-    sonarQubeScanner 'SonarScanner'
-}
-
-    environment {
-        SONAR_SCANNER_HOME = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+    tools {
+        sonarQubeScanner 'SonarScanner'
     }
 
     stages {
@@ -20,9 +16,15 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh """
-                    ${SONAR_SCANNER_HOME}/bin/sonar-scanner
-                    """
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
