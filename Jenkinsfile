@@ -12,11 +12,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                      sonar-scanner \
-                      -Dsonar.projectKey=jenkins-sonarqube-cicd \
-                      -Dsonar.sources=.
-                    '''
+                    sh """
+                    sonar-scanner \
+                    -Dsonar.projectKey=jenkins-sonarqube-cicd \
+                    -Dsonar.projectName=jenkins-sonarqube-cicd \
+                    -Dsonar.sources=.
+                    """
                 }
             }
         }
