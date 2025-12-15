@@ -29,17 +29,70 @@ Whenever code is pushed to the main branch:
 
 📂 Repository Structure
 
-jenkins-sonarqube-cicd/
-│── app/
+├── app/
 │   └── main.py
-│── Jenkinsfile
-│── docker-compose.yml
-│── sonar-project.properties
-│── README.md
-
+├── Jenkinsfile
+├── docker-compose.yml
+├── sonar-project.properties
+├── README.md
+└── screenshots/
 
 ⸻
 
+
+---
+
+## 🔄 CI/CD Workflow
+
+1. Developer pushes code to GitHub
+2. GitHub Webhook triggers Jenkins
+3. Jenkins pulls latest code
+4. SonarQube performs code analysis
+5. Quality Gate decision:
+   - ❌ FAIL → Pipeline stops
+   - ✅ PASS → Pipeline succeeds
+
+---
+
+## ❌ Phase 1: Quality Gate Failure (Expected)
+
+Initially, insecure code was added to demonstrate **SonarQube failure handling**.
+
+### Jenkins Pipeline Failure
+![Phase 1 Jenkins Failure](screenshots/phase1-error.png)
+
+### SonarQube Quality Gate Failed
+![SonarQube Failed](screenshots/sonar-1.png)
+
+---
+
+## ✅ Phase 2: Code Fixed & Quality Gate Passed
+
+Code issues were fixed and pushed again.
+
+### Jenkins Pipeline Success
+![Phase 2 Jenkins Success](screenshots/phase2-success.png)
+
+### SonarQube Quality Gate Passed
+![SonarQube Passed](screenshots/sonar-2.png)
+
+---
+
+## ☁️ Infrastructure (AWS EC2)
+
+Jenkins and SonarQube are hosted on an AWS EC2 instance.
+
+![EC2 Server](screenshots/ec2-server.png)
+
+---
+
+## 🧪 Sample Secure Code (Python)
+
+```python
+def secure_login(password):
+    if not password:
+        raise ValueError("Password required")
+    return True
 🧪 Sample Code Used
 
 ❌ Insecure Code (Fails Quality Gate)
